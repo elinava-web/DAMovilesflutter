@@ -1,0 +1,294 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: MyWidget(),
+    ),
+  );
+}
+
+class MyWidget extends StatefulWidget {
+  @override
+  _MyWidgetState createState() => _MyWidgetState();
+}
+
+class _MyWidgetState extends State<MyWidget> with TickerProviderStateMixin {
+  AnimationController _animationController;
+  final double height = 650;
+  final double width = 350;
+  bool isPlaying;
+  int btnIndex;
+
+  @override
+  void initState() {
+    _animationController =  AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+    isPlaying = false;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color(0xff2b2b2b),
+      resizeToAvoidBottomInset: false,
+      body: Center(
+        child: FittedBox(
+          child: Container(
+            height: height,
+            width: width,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Color(0xfff7f7f7),
+              boxShadow: [
+                BoxShadow(
+                  offset: Offset(0, 3),
+                  color: Colors.grey,
+                  blurRadius: 10
+                )
+              ]
+            ),
+            child: Stack(
+              children: [
+                Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+                      child: Container(
+                        height: height*0.6,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5,vertical: 5),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Enter your text here:',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 1
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                child: Container(
+                                  height: height*0.52,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[300],
+                                    borderRadius: BorderRadius.circular(12)
+                                  ),
+                                  child: TextFormField(
+                                    cursorColor: Colors.black87,
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: 16
+                                    ),
+                                    decoration: InputDecoration(
+                                      hintMaxLines: 18,
+                                      border: InputBorder.none,
+                                      contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                                      fillColor: Colors.grey,
+                                      focusColor: Colors.grey
+                                    ),
+                                    maxLines: 18,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        width: width,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Center(
+                                child: Container(
+                                  width: width*0.12,
+                                  height: height*0.01,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[300],
+                                    borderRadius: BorderRadius.circular(10)
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: height*0.02,),
+                              Text(
+                                'VOICE MODE',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16
+                                ),
+                              ),
+                              SizedBox(height: height*0.01,),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          btnIndex=0;
+                                        });
+                                      },
+                                      child: modeButton(
+                                        mode[0],
+                                        0
+                                      ),
+                                    ),
+                                  GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          btnIndex=1;
+                                        });
+                                      },
+                                      child: modeButton(
+                                        mode[1],
+                                        1
+                                      ),
+                                    ),
+
+                                  GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          btnIndex=2;
+                                        });
+                                      },
+                                      child: modeButton(
+                                        mode[2],
+                                        2
+                                      ),
+
+                                  )
+                                ],
+                              ),
+                              SizedBox(height: height*0.015,),
+                              Center(
+                                  child: Container(
+                                    height: height*0.12,
+                                    width: width*0.18,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey,
+                                          offset: Offset(0, 3),
+                                          blurRadius: 10
+                                        )
+                                      ]
+                                    ),
+                                    child: IconButton(
+                                      icon: AnimatedIcon(
+                                      icon: AnimatedIcons.play_pause,
+                                      size: 35,
+                                      progress: _animationController
+                                    ),
+                                      onPressed: (){
+                                        _handleOnPressed();
+                                      }
+                                    )
+                                  ),
+                              )
+                            ],
+                          )
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8,),
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      width: width*0.9,
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey[300],
+                            blurRadius: 8,
+                            offset: Offset(0, 3)
+                          )
+                        ]
+                      ),
+                      child: RaisedButton(
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)
+                        ),
+                        color: Colors.blueAccent,
+                        onPressed: (){
+
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 5),
+                          child: Text(
+                            'SEND',
+                            style: TextStyle(
+                              letterSpacing: 2,
+                              color: Colors.white,
+                              fontSize: 18
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          )
+        )
+      )
+    );
+  }
+  
+  void _handleOnPressed() {
+    setState(() {
+      isPlaying = !isPlaying;
+      isPlaying ? _animationController.forward() : _animationController.reverse();
+    });
+  }
+
+  List mode=[
+    'Hight',
+    'Mid',
+    'Heavy'
+  ];
+
+  Widget modeButton(String text, int index){
+    return Container(
+      decoration: BoxDecoration(
+        color: index == btnIndex ? Colors.grey : Colors.white,
+        border: Border.all(
+          color: Colors.grey,
+          width: 1
+        ),
+        borderRadius: BorderRadius.circular(8)
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
+        child: Text(
+          text,
+          style: TextStyle(
+            color: index == btnIndex ? Colors.white : Colors.black54,
+            fontSize: 15
+          ),
+        ),
+      ),
+    );
+  }
+}
